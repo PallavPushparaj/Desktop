@@ -1,0 +1,30 @@
+<template>
+    <lightning-card>
+        <c-assignment-2-child></c-assignment-2-child>
+            <lightning-combobox
+                name="accountType"
+                label="Enter Account Type"
+                value={accountTypeValue}
+                placeholder="Enter Account Type"
+                options={accountTypes}
+                onchange={handleAccountType}>
+            </lightning-combobox>
+            <lightning-combobox 
+                name="accountIndustry"
+                label="Enter Account Industry"
+                value={industryValue}
+                placeholder="Enter Account Industry"
+                options={industries}
+                onchange={handleAccountIndustry}>
+            </lightning-combobox>
+        <lightning-button type="submit" label="Save" onclick={handleSave}></lightning-button>
+        <lightning-button type="submit" label="Display Accounts" onclick={displayAccounts}></lightning-button>
+        <template if:true={flag}>
+            <lightning-datatable
+            key-field="id"
+            data={accounts}
+            columns={columns}
+        ></lightning-datatable>
+        </template>
+        </lightning-card>
+</template>

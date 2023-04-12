@@ -1,0 +1,205 @@
+{
+  "Add Temp Class": {
+    "action": "computeExpression",
+    "parameters": {
+      "source": "Filter 2015",
+      "mergeWithSource": true,
+      "computedFields": [
+        {
+          "defaultValue": "Continental",
+          "name": "TempClass",
+          "saqlExpression": "case when Temperature < 25 then \"Polar\" when Temperature >= 25 and Temperature <= 50 then \"Cool\" when Temperature >= 51 and Temperature <= 85 then \"Continental\" when Temperature > 85 then \"Tropical\" end",
+          "label": "TempClass",
+          "type": "Text"
+        }
+      ]
+    }
+  },
+  "Create Order History": {
+    "action": "sfdcRegister",
+    "parameters": {
+      "name": "Order History",
+      "alias": "Order_History2",
+      "source": "Add Seed Orders"
+    }
+  },
+  "Load Seed Orders": {
+    "action": "edgemart",
+    "parameters": {
+      "alias": "Order_History2"
+    }
+  },
+  "Augment Temp Class": {
+    "action": "augment",
+    "parameters": {
+      "right_key": [
+        "ShippingCountry"
+      ],
+      "left": "Add Temp Class",
+      "left_key": [
+        "Country"
+      ],
+      "right_select": [
+        "AccountNumber",
+        "Name",
+        "Phone",
+        "ShippingCity",
+        "ShippingCountry",
+        "ShippingPostalCode",
+        "ShippingState",
+        "ShippingStreet"
+      ],
+      "right": "Load Account",
+      "relationship": "AugmentTempClass",
+      "operation": "LookupSingleValue"
+    }
+  },
+  "Load Climate": {
+    "action": "edgemart",
+    "parameters": {
+      "alias": "Global_Climates"
+    }
+  },
+  "Add Seed Orders": {
+    "action": "augment",
+    "parameters": {
+      "left": "Load Seed Orders",
+      "right": "Filter Agency Records",
+      "relationship": "SeedOrders",
+      "operation": "LookupSingleValue",
+      "left_key": [
+        "Agency_ID"
+      ],
+      "right_key": [
+        "Climate.AccountNumber"
+      ],
+      "right_select": [
+        "AugmentTempClass.AccountNumber",
+        "AugmentTempClass.Name",
+        "AugmentTempClass.Phone",
+        "AugmentTempClass.ShippingCity",
+        "AugmentTempClass.ShippingCountry",
+        "AugmentTempClass.ShippingPostalCode",
+        "AugmentTempClass.ShippingState",
+        "AugmentTempClass.ShippingStreet"
+      ]
+    }
+  },
+  "Filter 2015": {
+    "action": "filter",
+    "parameters": {
+      "filter": "Date_Year:EQ:2015",
+      "source": "Load Climate"
+    }
+  },
+  "Add Agency Detail Fields": {
+    "action": "augment",
+    "parameters": {
+      "right_key": [
+        "AccountNumber"
+      ],
+      "left": "Load Account",
+      "left_key": [
+        "AccountNumber"
+      ],
+      "right_select": [
+        "AccountNumber",
+        "Acres",
+        "Currency",
+        "Latitude",
+        "Longitude",
+        "Region",
+        "SubRegion"
+      ],
+      "right": "Load Agency",
+      "relationship": "AgencyDetail",
+      "operation": "LookupSingleValue"
+    }
+  },
+  "ID Agency Records": {
+    "action": "computeExpression",
+    "parameters": {
+      "source": "Add Agency Detail Fields",
+      "mergeWithSource": true,
+      "computedFields": [
+        {
+          "name": "IsAgency",
+          "saqlExpression": "case when Phone is not null then \"TRUE\" else \"FALSE\" end",
+          "label": "IsAgency",
+          "type": "Text"
+        }
+      ]
+    }
+  },
+  "Load Agency": {
+    "action": "edgemart",
+    "parameters": {
+      "alias": "Agency_Detail"
+    }
+  },
+  "Filter Agency Records": {
+    "action": "filter",
+    "parameters": {
+      "filter": "Climate.IsAgency:EQ:TRUE",
+      "source": "Add Agency Fields"
+    }
+  },
+  "Load Account": {
+    "action": "sfdcDigest",
+    "parameters": {
+      "fields": [
+        {
+          "name": "AccountNumber"
+        },
+        {
+          "name": "Name"
+        },
+        {
+          "name": "Phone"
+        },
+        {
+          "name": "ShippingCity"
+        },
+        {
+          "name": "ShippingCountry"
+        },
+        {
+          "name": "ShippingPostalCode"
+        },
+        {
+          "name": "ShippingState"
+        },
+        {
+          "name": "ShippingStreet"
+        }
+      ],
+      "object": "Account"
+    }
+  },
+  "Add Agency Fields": {
+    "action": "augment",
+    "parameters": {
+      "right_key": [
+        "AccountNumber"
+      ],
+      "left": "Augment Temp Class",
+      "left_key": [
+        "AugmentTempClass.AccountNumber"
+      ],
+      "right_select": [
+        "AccountNumber",
+        "IsAgency",
+        "Name",
+        "Phone",
+        "ShippingCity",
+        "ShippingCountry",
+        "ShippingPostalCode",
+        "ShippingState",
+        "ShippingStreet"
+      ],
+      "right": "ID Agency Records",
+      "relationship": "Climate",
+      "operation": "LookupSingleValue"
+    }
+  }
+}

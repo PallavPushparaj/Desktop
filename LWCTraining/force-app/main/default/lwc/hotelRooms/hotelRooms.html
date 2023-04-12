@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title="Hotel Rooms">
+        <lightning-layout>
+            <lightning-layout-item size="12">
+                <template for:each={hotelRoomsInfo} for:item="room">
+                    <li key={room.roomName}>
+                        <!-- {room.roomName} -->
+                        <c-hotel-room hotel-room-info={room} show-room-info></c-hotel-room>
+                    </li>
+                </template>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Pallav Pushparaj">
+        <lightning-combobox 
+            name="accountNames"
+            label="Enter Account Name"
+            value={accountName}
+            placeholder="Enter Account Name"
+            options={names}
+            required="true"
+            onchange={handleAccountNames}>
+        </lightning-combobox>
+        <lightning-button label="Edit Account" onclick={handleEdit}></lightning-button>
+        <lightning-button type="submit" label="Display Accounts" onclick={displayAccounts}></lightning-button>
+        <template if:true={flag}><c-modal account-name={accountName}></c-modal></template>
+        <template if:true={showTableFlag}>
+            <lightning-datatable
+                key-field="id"
+                data={accountsData}
+                show-row-number-column
+                columns={cols}
+            ></lightning-datatable>
+        </template>
+    </lightning-card>
+</template>

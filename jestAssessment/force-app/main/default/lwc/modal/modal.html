@@ -1,0 +1,25 @@
+<template>
+    <lightning-modal-header label="Account Update"></lightning-modal-header>
+    <lightning-modal-body>
+        <lightning-combobox
+                    name="accountType"
+                    label="Enter Account Type"
+                    value={accountTypeValue}
+                    placeholder="Enter Account Type"
+                    options={accountTypes}
+                    onchange={handleAccountType}>
+                </lightning-combobox>
+                <lightning-combobox 
+                    name="accountIndustry"
+                    label="Enter Account Industry"
+                    value={industryValue}
+                    placeholder="Enter Account Industry"
+                    options={industries}
+                    onchange={handleAccountIndustry}>
+                </lightning-combobox>
+            </lightning-modal-body>
+        <lightning-modal-footer>
+            <lightning-button type="submit" label="Cancel" onclick={handleCancel}></lightning-button>
+            <lightning-button type="submit" label="Save" onclick={handleSave}></lightning-button>
+        </lightning-modal-footer>
+</template>

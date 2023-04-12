@@ -1,0 +1,11 @@
+<template>
+    <lightning-card title="Todo item component">
+        <template if:true={showTodo}>
+            <div class="slds-p-around_medium">
+                <lightning-tile label="Todo Item">
+                    <span>{itemName}</span>
+                </lightning-tile>
+            </div>
+        </template>
+    </lightning-card>
+</template>

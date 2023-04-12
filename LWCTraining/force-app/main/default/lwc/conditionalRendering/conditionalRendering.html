@@ -1,0 +1,21 @@
+<template>
+    <lightning-card title="Conditional rendering">
+        <lightning-input type="checkbox" label="Select Checkbox" onchange={changeHandler}></lightning-input>
+        <template if:true = {displayDiv}>
+            <div>
+                Hello Everyone !!
+            </div>
+        </template>
+        <!-- <template for:each={cityList} for:item="city">
+            <p key = {city}>
+                {city}
+            </p>
+        </template> -->
+        <template iterator:it={cityList}>
+            <p key={it.value}>
+                {it.value} {it.index} {it.first} {it.last}
+            </p>
+        </template>
+        <lightning-button onclick={handleClick} label="Modify the array elements"></lightning-button>
+    </lightning-card>
+</template>
